@@ -59,17 +59,16 @@ int main() {
         cin >> method;
     }
     cout << "---------------------------------------------" << endl;
-    cout << "Saran Range Threshold :" << endl;
     if (method == 1) {
-        cout << "Range Threshold Metode Variance = 0 <= ... <= 10000" << endl;
+        cout << "Saran Range Threshold Metode Variance : 0 <= ... <= 10000" << endl;
     } else if (method == 2) {
-        cout << "Range Threshold Metode MAD = 0 <= ... <= 255" << endl;
+        cout << "Saran Range Threshold Metode MAD : 0 <= ... <= 255" << endl;
     } else if (method == 3) {
-        cout << "Range Threshold Metode MaxPixelDiff = 0 <= ... <= 765" << endl;
+        cout << "Saran Range Threshold Metode MaxPixelDiff : 0 <= ... <= 765" << endl;
     } else if (method == 4) {
-        cout << "Range Threshold Metode Entropy = 0 <= ... <= 24" << endl;
+        cout << "Saran Range Threshold Metode Entropy : 0 <= ... <= 24" << endl;
     } else {
-        cout << "Range Threshold Metode SSIM = 0 <= ... <= 1" << endl;
+        cout << "Saran Range Threshold Metode SSIM : 0 <= ... <= 1" << endl;
     }
     cout << "Masukkan nilai threshold (ambang batas) : ";
     double threshold;
@@ -80,12 +79,12 @@ int main() {
         cin >> threshold;
     }
     cout << "---------------------------------------------" << endl;
-    cout << "Masukkan minimum block size yang diinginkan : ";
+    cout << "Masukkan minimum block size yang diinginkan (panjang sisi) : ";
     int min_block_size;
     cin >> min_block_size;
     while (min_block_size < 1 || min_block_size > min(width , height)) {
         cout << "Error : Ukuran tidak valid. Hanya boleh 1 - " << min(width , height) << endl;
-        cout << "[RE] Masukkan minimum block size yang diinginkan : ";
+        cout << "[RE] Masukkan minimum block size yang diinginkan (panjang sisi) : ";
         cin >> min_block_size;
     }
     cout << "---------------------------------------------" << endl;
@@ -98,7 +97,6 @@ int main() {
         cin >> target_compression;
     }
     cin.ignore();
-    // target_compression = 0.0;
     cout << "---------------------------------------------" << endl;
     cout << "Masukkan output path gambar hasil kompresi (PNG) : ";
     string output_path;
@@ -167,8 +165,6 @@ int main() {
             int temp_size = size_of_file(str_out);
             double ratio = fabs(1.0 - ((double) temp_size / (double) original_size));
             double diff = fabs(ratio - target_compression);
-            cout << "\r                                                                                                                                           \r" << flush;
-            cout << "[COMPRESSING - " << k + 1 << "] :: " << fixed << setprecision(3) << ratio * 100 << "% :: Threshold " << fixed << setprecision(3) << best_threshold << flush;
             if (diff < best_diff) {
                 best_diff = diff;
                 best_threshold = mid;
@@ -179,6 +175,8 @@ int main() {
             } else {
                 maxt = mid;
             }
+            cout << "\r                                                                          \r" << flush;
+            cout << "[COMPRESSING - " << k + 1 << "] :: " << fixed << setprecision(3) << ratio * 100 << "% :: Threshold " << fixed << setprecision(3) << best_threshold << flush;
             if (best_diff < tolerance_ratio || fabs(maxt - mint) < 0.000001 || k == 19) {
                 cout << endl << "[Threshold Akhir]      : " << fixed << setprecision(3) << best_threshold << endl;
                 cout << "Loading..." << endl;
