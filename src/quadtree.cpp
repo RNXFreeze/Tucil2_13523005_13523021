@@ -79,6 +79,7 @@ static double ComputeMaxPixelDiff(const vector<vector<Pixel>>& image , int start
     int minr = 255 , ming = 255 , minb = 255;
     int maxr = 0 , maxg = 0 , maxb = 0;
     long long sumr = 0 , sumg = 0 , sumb = 0;
+    long long n = (long long) blockw * blockh;
     for (int i = starty ; i < starty + blockh ; i++) {
         for (int j = startx ; j < startx + blockw ; j++) {
             int r = image[i][j].r;
@@ -90,8 +91,17 @@ static double ComputeMaxPixelDiff(const vector<vector<Pixel>>& image , int start
             ming = min(ming , g);
             maxb = max(maxb , b);
             minb = min(minb , b);
+            sumr += r;
+            sumg += g;
+            sumb += b;
         }
     }
+    double meanr = (double) sumr / n;
+    double meang = (double) sumg / n;
+    double meanb = (double) sumb / n;
+    average.r = (unsigned char) round(meanr);
+    average.g = (unsigned char) round(meang);
+    average.b = (unsigned char) round(meanb);
     double dr = (double) (maxr - minr);
     double dg = (double) (maxg - ming);
     double db = (double) (maxb - minb);
@@ -161,9 +171,9 @@ QuadNode* BuildQuadTree(vector<vector<Pixel>>& image , int startx , int starty ,
     (*node).blockw = blockw;
     (*node).blockh = blockh;
     Pixel avg;
-    double errVal = ComputeBlockError(image , startx , starty , blockw , blockh , method , avg);
+    double error_value = ComputeBlockError(image , startx , starty , blockw , blockh , method , avg);
     (*node).avg_color = avg;
-    if ((errVal > threshold) && (blockw > min_block_size) && (blockh > min_block_size)) {
+    if ((error_value > threshold) && (blockw > min_block_size) && (blockh > min_block_size)) {
         int halfW = blockw / 2;
         int halfH = blockh / 2;
         (*node).child[0] = BuildQuadTree(image , startx , starty , halfW , halfH , min_block_size , threshold , method);
