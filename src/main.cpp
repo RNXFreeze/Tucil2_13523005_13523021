@@ -59,7 +59,7 @@ int main() {
     }
     cout << "Saran Range Threshold :" << endl;
     if (method == 1) {
-        cout << "Range Threshold Metode Variance = 0 <= ... <= 10000" << endl;
+        cout << "Range Threshold Metode Variance = 0 <= ... <= 1000" << endl;
     } else if (method == 2) {
         cout << "Range Threshold Metode MAD = 0 <= ... <= 255" << endl;
     } else if (method == 3) {
