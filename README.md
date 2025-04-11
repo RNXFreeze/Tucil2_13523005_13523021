@@ -9,6 +9,7 @@ Program ini adalah program implementasi untuk melakukan kompresi terhadap suatu 
 - Kompresi Gambar Dengan Quadtree Metode Mean Absolute Deviation (MAD)
 - Kompresi Gambar Dengan Quadtree Metode Max Pixel Difference
 - Kompresi Gambar Dengan Quadtree Metode Entropy
+- Kompresi Gambar Sesuai Target Persentase
 - Input File Berupa JPG / JPEG / PNG
 - Output File Berupa PNG
 - Analisis Quadtree
