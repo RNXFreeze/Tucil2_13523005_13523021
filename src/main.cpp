@@ -61,13 +61,13 @@ int main() {
     cout << "---------------------------------------------" << endl;
     cout << "Saran Range Threshold :" << endl;
     if (method == 1) {
-        cout << "Range Threshold Metode Variance = 0 <= ... <= 1000" << endl;
+        cout << "Range Threshold Metode Variance = 0 <= ... <= 10000" << endl;
     } else if (method == 2) {
         cout << "Range Threshold Metode MAD = 0 <= ... <= 255" << endl;
     } else if (method == 3) {
         cout << "Range Threshold Metode MaxPixelDiff = 0 <= ... <= 765" << endl;
     } else if (method == 4) {
-        cout << "Range Threshold Metode Entropy = 0 <= ... <= 8" << endl;
+        cout << "Range Threshold Metode Entropy = 0 <= ... <= 24" << endl;
     } else {
         cout << "Range Threshold Metode SSIM = 0 <= ... <= 1" << endl;
     }
@@ -98,7 +98,7 @@ int main() {
         cin >> target_compression;
     }
     cin.ignore();
-    target_compression = 0.0;
+    // target_compression = 0.0;
     cout << "---------------------------------------------" << endl;
     cout << "Masukkan output path gambar hasil kompresi (PNG) : ";
     string output_path;
@@ -128,6 +128,66 @@ int main() {
     cout << "---------------------------------------------" << endl;
     cout << "Loading..." << endl;
     auto start = chrono::high_resolution_clock::now();
+    int original_size = size_of_file(input_path);
+    if (target_compression > 0.0) {
+        double mint = 0.0 , maxt = 10000.0;
+        if (method == 1) {
+            mint = 0.0;
+            maxt = 10000.0;
+        } else if (method == 2) {
+            mint = 0.0;
+            maxt = 255.0;
+        } else if (method == 3) {
+            mint = 0.0;
+            maxt = 765.0;
+        } else if (method == 4) {
+            mint = 0.0;
+            maxt = 24.0;
+        } else {
+            mint = 0.0;
+            maxt = 1.0;
+        }
+        int best_final_size = 0;
+        double tolerance_ratio = 0.0005;
+        double best_threshold = threshold;
+        double best_diff = std::numeric_limits<double>::max();
+        for (int k = 0 ; k < 20 ; k++) {
+            double mid = (mint + maxt) / 2;
+            QuadNode* temp_root = BuildQuadTree(input_image , 0 , 0 , width , height , min_block_size , mid , method);
+            vector<vector<Pixel>> temp_image(height , vector<Pixel> (width));
+            for (int i = 0 ; i < height ; i++) {
+                for (int j = 0 ; j < width ; j++) {
+                    temp_image[i][j] = input_image[i][j];
+                }
+            }
+            ReconstructQuadTree(temp_root , temp_image);
+            FreeQuadTree(temp_root);
+            string str_out = "temp_image.png";
+            check = save_image(str_out , temp_image , width , height);
+            int temp_size = size_of_file(str_out);
+            double ratio = fabs(1.0 - ((double) temp_size / (double) original_size));
+            double diff = fabs(ratio - target_compression);
+            cout << "\r                                                                                                                                           \r" << flush;
+            cout << "[COMPRESSING - " << k + 1 << "] :: " << fixed << setprecision(3) << ratio * 100 << "% :: Threshold " << fixed << setprecision(3) << best_threshold << flush;
+            if (diff < best_diff) {
+                best_diff = diff;
+                best_threshold = mid;
+                best_final_size = temp_size;
+            }
+            if (ratio < target_compression) {
+                mint = mid;
+            } else {
+                maxt = mid;
+            }
+            if (best_diff < tolerance_ratio || fabs(maxt - mint) < 0.000001 || k == 19) {
+                cout << endl << "[Threshold Akhir]      : " << fixed << setprecision(3) << best_threshold << endl;
+                cout << "Loading..." << endl;
+                break;
+            }
+        }
+        threshold = best_threshold;
+        remove("./temp_image.png");
+    }
     QuadNode* root = BuildQuadTree(input_image , 0 , 0 , width , height , min_block_size , threshold , method);
     vector<vector<Pixel>> res_image(height , vector<Pixel> (width));
     for (int i = 0 ; i < height ; i++) {
@@ -144,7 +204,6 @@ int main() {
         int node_count = 0 , max_depth = 0;
         GetQuadTreeInfo(root , node_count , max_depth , 1);
         FreeQuadTree(root);
-        int original_size = size_of_file(input_path);
         int final_size = size_of_file(output_path);
         double compression_ratio = (1.0 - ((double) final_size / (double) original_size)) * 100.0;
         auto end = chrono::high_resolution_clock::now();
