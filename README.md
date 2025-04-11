@@ -23,7 +23,7 @@ git clone https://github.com/RNXFreeze/Tucil2_13523005_13523021.git
 Untuk compile, langsung buka terminal dan masukkan 2 command berikut:
 ```bash
 cd src
-g++ main.cpp quadtree.cpp image_util.cpp -o run
+g++ main.cpp quadtree.cpp image_util.cpp -o ../bin/run
 ```
 
 ## How To Run
