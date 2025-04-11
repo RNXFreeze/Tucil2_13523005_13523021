@@ -43,6 +43,7 @@ int main() {
             getline(cin , input_path);
         }
     }
+    cout << "---------------------------------------------" << endl;
     cout << "Pilihan Metode Perhitungan Error :" << endl;
     cout << "1. Variance" << endl;
     cout << "2. Mean Absolute Deviation (MAD)" << endl;
@@ -57,6 +58,7 @@ int main() {
         cout << "[RE] Masukkan metode yang ingin digunakan (angka) : ";
         cin >> method;
     }
+    cout << "---------------------------------------------" << endl;
     cout << "Saran Range Threshold :" << endl;
     if (method == 1) {
         cout << "Range Threshold Metode Variance = 0 <= ... <= 1000" << endl;
@@ -77,6 +79,7 @@ int main() {
         cout << "[RE] Masukkan nilai threshold (ambang batas) : ";
         cin >> threshold;
     }
+    cout << "---------------------------------------------" << endl;
     cout << "Masukkan minimum block size yang diinginkan : ";
     int min_block_size;
     cin >> min_block_size;
@@ -85,6 +88,7 @@ int main() {
         cout << "[RE] Masukkan minimum block size yang diinginkan : ";
         cin >> min_block_size;
     }
+    cout << "---------------------------------------------" << endl;
     cout << "Masukkan target persentase kompresi (masukkan 0 untuk menonaktifkan) : ";
     double target_compression;
     cin >> target_compression;
@@ -95,6 +99,7 @@ int main() {
     }
     cin.ignore();
     target_compression = 0.0;
+    cout << "---------------------------------------------" << endl;
     cout << "Masukkan output path gambar hasil kompresi (PNG) : ";
     string output_path;
     getline(cin , output_path);
@@ -107,6 +112,7 @@ int main() {
         lower_input = output_path;
         transform(lower_input.begin() , lower_input.end() , lower_input.begin() , ::tolower);
     }
+    cout << "---------------------------------------------" << endl;
     cout << "Masukkan path output GIF (enter untuk menonaktifkan) : ";
     string gif_path;
     getline(cin , gif_path);
@@ -119,6 +125,8 @@ int main() {
         lower_input = gif_path;
         transform(lower_input.begin() , lower_input.end() , lower_input.begin() , ::tolower);
     }
+    cout << "---------------------------------------------" << endl;
+    cout << "Loading..." << endl;
     auto start = chrono::high_resolution_clock::now();
     QuadNode* root = BuildQuadTree(input_image , 0 , 0 , width , height , min_block_size , threshold , method);
     vector<vector<Pixel>> res_image(height , vector<Pixel> (width));
